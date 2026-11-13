@@ -36,6 +36,10 @@ try:
     if os.path.exists(os.path.join(_here, "psp_run.py")): FOLDER = _here
 except NameError: pass
 sys.path.insert(0, FOLDER)
+try:
+    import psp_privacy as PRIV                                  # (problem reports: no personal details in them)
+    PRIV.set_paths(FOLDER)
+except Exception: PRIV = None
 PIPES_FILE = os.path.join(FOLDER, "vk_pipelines.bin")       # (Vulkan) drawing setups kept from earlier sessions
 
 class _Tee:                                     # everything printed also goes to play_log.txt (to send to Claude)
@@ -565,6 +569,7 @@ def start_machine():
     eboot = os.path.join(FOLDER, "EBOOT.BIN.dec")
     iso = os.environ.get("MGSPO_ISO") or None                         # (the disc image chosen in the launcher)
     if not iso or not os.path.exists(iso): iso = psp_run.find_iso(FOLDER)
+    if PRIV and iso: PRIV.set_paths(iso=iso)
     fresh = os.environ.get("MGSPO_FRESH") == "1"                       # (launcher: NEW MISSION = from power-on)
     for name in ([] if fresh else SNAPS):
         p = os.path.join(FOLDER, name)
@@ -1310,22 +1315,49 @@ def main():
             while gl.get('grab') is True and time.perf_counter() < t_end: time.sleep(0.02)
             g = gl.get('grab'); gl['grab'] = None
             zpath = os.path.join(rdir, 'report_' + stamp + '.zip')
+            # privacy: everything that goes in is cleaned first - folder paths (they hold the Windows user name), the
+            # user name and the PC's name become placeholders, in the texts and in the snapshot (psp_privacy.py). Anything
+            # still holding one afterwards is left out. Without psp_privacy.py nothing but the screenshot goes in.
+            def clean(t): return PRIV.text(t) if PRIV else None
+            notes = []
             try:
                 try: sys.stdout.flush()
                 except Exception: pass
+                state['msg'] = "making a problem report: removing personal details..."
+                st_clean = None
+                if st_path and os.path.exists(st_path) and PRIV:
+                    try:
+                        st_clean = st_path[:-7] + '_clean.pkl.gz'; PRIV.state_file(st_path, st_clean)
+                        import gzip
+                        with gzip.open(st_clean, 'rb') as f: left = PRIV.leftovers(f.read())
+                        if left: notes.append("snapshot left out: it still held personal details"); os.remove(st_clean); st_clean = None
+                    except Exception as e: notes.append(f"snapshot left out ({e})"); st_clean = None
+                texts = {'report.txt': "\n".join(lines) + "\n"}
+                for name in ('play_log.txt', 'port_settings.txt'):
+                    fp = os.path.join(FOLDER, name)
+                    if os.path.exists(fp): texts[name] = open(fp, encoding='utf-8', errors='replace').read()
+                fp = os.path.join(FOLDER, 'perf_log.txt')            # (an F7 report from the last half hour)
+                if os.path.exists(fp) and time.time() - os.path.getmtime(fp) < 1800: texts['perf_log.txt'] = open(fp, encoding='utf-8', errors='replace').read()
                 with zipfile.ZipFile(zpath, 'w', zipfile.ZIP_DEFLATED) as z:
-                    z.writestr('report.txt', "\n".join(lines) + "\n")
+                    for name, t in texts.items():
+                        c = clean(t)
+                        if c is None or PRIV.leftovers(c): notes.append(f"{name} left out: it still held personal details"); continue
+                        z.writestr(name, c)
                     if isinstance(g, tuple): z.writestr('screenshot.png', png(*g))
-                    if st_path and os.path.exists(st_path): z.write(st_path, 'state_quick.pkl.gz', compress_type=zipfile.ZIP_STORED)
-                    for name in ('play_log.txt', 'port_settings.txt'):
-                        fp = os.path.join(FOLDER, name)
-                        if os.path.exists(fp): z.write(fp, name)
-                    fp = os.path.join(FOLDER, 'perf_log.txt')        # (an F7 report from the last half hour)
-                    if os.path.exists(fp) and time.time() - os.path.getmtime(fp) < 1800: z.write(fp, 'perf_log.txt')
-                if st_path:
-                    try: os.remove(st_path)
-                    except OSError: pass
-                msg = "problem report saved: problem_reports\\report_" + stamp + ".zip - send it to Claude"
+                    if st_clean: z.write(st_clean, 'state_quick.pkl.gz', compress_type=zipfile.ZIP_STORED)
+                    z.writestr('PRIVACY.txt', "This problem report was made by the MGS Ported Ops port (F8). Before it was saved, folder paths\n"
+                               "(they hold your Windows user name), your user name and your PC's name were replaced with placeholders\n"
+                               "like <home>, <user> and <pc>, in every file here. It holds: the game's state (the game's own memory),\n"
+                               "a picture of the game screen, the port's settings and logs, and your graphics card's name. Nothing else.\n"
+                               + ("\n" + "\n".join(notes) + "\n" if notes else ""))
+                for p in (st_path, st_clean):
+                    if p:
+                        try: os.remove(p)
+                        except OSError: pass
+                mb = os.path.getsize(zpath) / 2 ** 20
+                msg = "problem report saved: problem_reports\\report_" + stamp + ".zip (personal details removed) - attach it to a GitHub issue"
+                if mb > 24.5: msg += f" - it is {mb:.0f} MB, over GitHub's 25 MB: leave out state_quick.pkl.gz or share it by link"
+                for n in notes: print("problem report:", n, flush=True)
             except Exception:
                 traceback.print_exc(); msg = "the problem report could not be written (error above)"
             print(msg, flush=True); state['msg'] = msg

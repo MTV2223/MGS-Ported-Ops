@@ -53,16 +53,70 @@ All settings are in the launcher's **SETTINGS** page (they are kept in `port_set
 | Keyboard / mouse | PSP | Controller |
 |---|---|---|
 | W A S D | analog stick | left stick |
-| mouse | camera (D-pad) | right stick |
+| mouse (or arrow keys) | D-pad (camera) | D-pad / right stick (camera) |
 | Space | Cross | A / Cross |
 | R | Circle | B / Circle |
 | left mouse button | Square | X / Square |
 | Shift | Triangle | Y / Triangle |
 | right mouse button | L (auto aim) | LB / L1 |
-| middle mouse button | R (first-person aim) | RB / R1 |
-| Tab / C | START / SELECT | Start / Back |
+| middle mouse button (press the wheel) | R (first-person aim) | RB / R1 |
+| Tab / C | START / SELECT | Start / Back (Select) |
 
-F5 snapshot · F11 full screen · F6 lighting on/off · F4 60 fps on/off · F7 performance log · F8 problem report · Esc quit
+Xbox controllers work directly; PlayStation, Switch Pro and most others work through SDL.
+
+### Extras the port adds
+
+| What | Keyboard / mouse | Controller |
+|---|---|---|
+| **Strafe** while auto aiming | hold right mouse button + **left Ctrl**, walk with W A S D | hold LB + **LT**, walk with the left stick |
+| **First-person aiming like a PC shooter** (W A S D walk, the mouse aims) | hold middle mouse button | hold RB: left stick walks, right stick aims |
+| **Aim with W A S D** while aiming in first person | hold middle mouse button + **Shift** (let go of W A S D and the mouse aims again) | - |
+| **Menus** (mission / staff hub, codec) and the weapon / item select | W A S D work as the D-pad | D-pad, as on the PSP |
+| **Locker capture** (see below) | hold **Shift** while dragging an enemy into a locker | hold **RT / R2** while dragging an enemy into a locker |
+
+**Locker capture:**
+1. Open a locker: stand in front of it and press **Shift** (Y / Triangle on a controller).
+2. Knock out an enemy or put him to sleep, then drag him: with no weapon equipped, hold the **left mouse button**
+   (X / Square) on him.
+3. Hold **Shift** or **RT / R2** and walk into the open locker while dragging him. Once he's inside he's captured and
+   goes on your roster, just like loading him onto the truck. Without Shift / R2 held, the locker works as normal and he's
+   just hidden. (Can be turned off in the launcher's SETTINGS, GAMEPLAY page.)
+
+Aiming speed, PC-style aiming, mouse camera and the right stick can be changed in the launcher's SETTINGS, CONTROLS page.
+
+### Keys
+
+| Key | Does |
+|---|---|
+| F5 | save a snapshot (CONTINUE MISSION starts from it) |
+| F11 | full screen on / off |
+| F10 | let go of the mouse (click in the window to take it back) |
+| F2 | sound on / off |
+| F4 | 60 fps on / off |
+| F6 | remaster lighting on / off |
+| F3 / F9 | picture display options (for comparing) |
+| F7 | performance log (`perf_log.txt`) |
+| F8 | problem report (a zip in `problem_reports`, with a snapshot, screenshot and logs) |
+| Esc | quit |
+
+## Reporting a problem (F8)
+
+Something looks or sounds wrong, the game stutters or crashes? Press **F8** right when it happens. The port saves a
+problem report in the `problem_reports` folder: one zip with everything needed to see what went wrong.
+
+To report it, open this project's [Issues](../../issues) page, choose **New issue**, say what happened and roughly where
+in the game, and drag the zip from `problem_reports` into the box.
+
+**Your privacy is protected.** A report holds only:
+- the game's state at that moment (the game's own memory, so the problem can be replayed exactly)
+- a picture of the game screen (only the game, not your desktop)
+- the port's settings and logs, and your graphics card's name
+
+Before the zip is saved, every folder path (on Windows these hold your user name, like `C:\Users\<name>\...`), your
+user name and your PC's name are replaced with placeholders such as `<home>`, `<user>` and `<pc>`, in every file
+inside, the game's state included. The report is then checked again, and anything that still holds one of them is
+left out. A `PRIVACY.txt` inside each zip says what was done. Nothing is ever sent anywhere by itself: you decide
+whether to share the zip.
 
 ## Making the packs (for maintainers)
 
