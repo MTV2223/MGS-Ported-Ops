@@ -1,0 +1,40 @@
+# --- the game itself: never upload it (everyone uses their own copy) ---
+*.iso
+*.cso
+EBOOT.BIN
+EBOOT.BIN.dec
+PSP_GAME/
+UMD_DATA.BIN
+pspdecrypt.exe
+
+# --- your own things: saves, settings, logs ---
+*.pkl.gz
+*.pkl(*).gz
+memstick/
+port_settings.txt
+launcher.ini
+My Files/
+ui_*.wav
+play_log.txt
+perf_log*.txt
+*perf_log.txt
+stutter_logs/
+problem_reports/
+vk_pipelines.bin
+
+# --- big extra packs (shared separately, if at all) ---
+HD textures/
+HD movies/
+SD_Dump/
+
+# --- the art and HD files themselves: only the locked .pak files are shared ---
+launcher_assets/
+HD movies/
+packs/
+*.pak
+!pak/launcher_assets.pak
+*.installing
+
+# --- made automatically ---
+__pycache__/
+*.pyc
