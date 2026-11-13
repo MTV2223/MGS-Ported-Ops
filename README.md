@@ -16,7 +16,7 @@ once the launcher has verified your own copy.
 - 60 fps (the game keeps its own pace; in-between pictures are drawn by the graphics card)
 - Remaster lighting: real-time character shadows, sun shading, ambient occlusion, colour grade
 - HD texture packs (the PPSSPP kind) and HD movie replacements
-- Keyboard and mouse controls made for PC, Xbox / PlayStation controllers
+- Keyboard and mouse controls made for PC, Xbox / PlayStation / Nintendo Switch Pro controllers
 - Locker capture: hold Shift / R2 while dragging an enemy into an open locker to capture him, like at the truck
 - Snapshots (F5) on top of the game's own saves, a performance log (F7) and one-key problem reports (F8)
 
@@ -65,6 +65,8 @@ All settings are in the launcher's **SETTINGS** page (they are kept in `port_set
 | Tab / C | START / SELECT | Start / Back (Select) |
 
 Xbox controllers work directly; PlayStation, Switch Pro and most others work through SDL.
+Buttons go by position, the same as the PSP: on a Switch Pro controller the bottom button (**B**) is Cross,
+the right one (**A**) is Circle, the left one (**Y**) is Square and the top one (**X**) is Triangle.
 
 ### Extras the port adds
 
