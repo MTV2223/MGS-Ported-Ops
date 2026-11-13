@@ -8,6 +8,8 @@ The game's own code runs on a purpose-built PSP machine, and its graphics are re
 Everything made from the game's art (the launcher's FOXHOUND intro, the HD packs) is locked to the disc: it only opens
 once the launcher has verified your own copy.
 
+> **Enjoying the port? Show some support by subscribing to my YouTube channel: [youtube.com/@watchmikelive](https://www.youtube.com/@watchmikelive)**
+
 ## What you get
 
 - Sharp HD rendering up to 2880x1632, anti-aliasing, smooth or PSP-sharp textures
@@ -132,6 +134,7 @@ Texture packs made by other people are left out (see `SKIP` in `make_packs.py`).
 
 ## Credits and licences
 
+- Metal Gear Solid: Ported Ops by **watchmikelive** - support the project by [subscribing on YouTube](https://www.youtube.com/@watchmikelive)
 - SDL2 (`SDL2.dll`): zlib licence, see `README-SDL.txt`
 - Vulkan headers (`vk/`): Apache 2.0 / MIT, The Khronos Group
 - HD texture pack (environments, objects, weapons, characters): **TheGreatBulzome** (HotdogRawdog) - not included,
